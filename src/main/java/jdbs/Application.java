@@ -6,25 +6,16 @@ public class Application {
     public static final String user = "postgres";
     public static final String password = "1234";
 
+    private static final EmployeeDAO employeeDAO = new EmployeeDAOImpl();
+
     public static void main(String[] args) {
-        try (Connection connection = DriverManager.getConnection(url, user, password);
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM employee WHERE id = 2");){
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                System.out.println(resultSet.getString(2));
-                System.out.println(resultSet.getString(3));
-                System.out.println(resultSet.getString(4));
-                System.out.println(resultSet.getInt(5));
-                System.out.println(resultSet.getInt(6));
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        EmployeeDAOImpl test = new EmployeeDAOImpl();
-        test.create(new Employee("Гадкий", "Я", "Хто Я", 100, 3));
-        test.readAll().forEach(System.out::println);
-        test.updateById(7, new Employee("Жук", "Жукович", "Жуков", 55, 2));
-        test.deleteById(7);
+        Employee test = new Employee("Аркадий", "Паровозов", "Муж", 32, 7);
+        employeeDAO.create(test);
+        System.out.println(employeeDAO.readById(4));
+        employeeDAO.readAll().forEach(System.out::println);
+        Employee employee = new Employee(5, "Таракан", "Тараканов", "Муж", 4,5);
+        employeeDAO.update(employee);
+        employeeDAO.delete(employee);
     }
 
     private static Connection getConnection() {
